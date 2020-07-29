@@ -15,27 +15,10 @@ const app = new Vue({
       tiempoPermanencia: 6,
       tiempoContinuo: 1,
       tiempoRetraso: -1, //preview
-      poema: `
-      Octubre
-      
-      Estaba echado yo en la tierra, enfrente
-      el infinito campo de Castilla,
-      que el otoño envolvía en la amarilla
-      dulzura de su claro sol poniente.
-      
-      Lento, el arado, paralelamente
-      abría el haza oscura, y la sencilla
-      mano abierta dejaba la semilla
-      en su entraña partida honradamente
-      
-      Pensé en arrancarme el corazón y echarlo,
-      pleno de su sentir alto y profundo,
-      el ancho surco del terruño tierno,
-      a ver si con partirlo y con sembrarlo,
-      
-      la primavera le mostraba al mundo
-      el árbol puro del amor eterno.
-      `,
+      poeta: '',
+      poema: '',
+      fondo: '',
+      frente: '',
       verso: '',
       started: false,
       t0: null,
@@ -49,6 +32,7 @@ const app = new Vue({
     };
   },
   methods: {
+
     play() {
       const audio = new Audio(this.audioUrl);
       audio.play();
@@ -118,35 +102,38 @@ const app = new Vue({
     getWords(text) {
       return text.trim().split(/[^\wáéíóúñ]+/i);
     },
-  },
-  watch: {
-    verso(verso) {
-      this.animacion.push(verso);
+    preparePoema() {
+      let word = '', line = 0, lineText = '';
+      const text = this.poema.split('\r\n').join('\n');
+      [...text].forEach(c => {
+        if (c.match(/[\wáéíóúñ]/)) {
+          word = word + c;
+        } else {
+          if (word) {
+            this.words.push({word, line, last: false});
+            word = '';
+          }
+        }
+        if (c == '\n') {
+          if (this.words.length) {
+            this.words[this.words.length - 1].last = true;
+          }
+          this.lines.push(lineText);
+          line++;
+          lineText = '';
+        } else {
+          lineText += c;
+        }
+      })
     },
   },
-  mounted() {
-    let word = '', line = 0, lineText = '';
-    const text = this.poema.split('\r\n').join('\n');
-    [...text].forEach(c => {
-      if (c.match(/[\wáéíóúñ]/)) {
-        word = word + c;
-      } else {
-        if (word) {
-          this.words.push({word, line, last: false});
-          word = '';
-        }
-      }
-      if (c == '\n') {
-        if (this.words.length) {
-          this.words[this.words.length - 1].last = true;
-        }
-        this.lines.push(lineText);
-        line++;
-        lineText = '';
-      } else {
-        lineText += c;
-      }
-    })
+  mounted() {    
+    axios.get('poemas.php').then((res) => {
+      Object.keys(res.data).forEach(key => {
+        this[key] = res.data[key];
+      });
+      this.preparePoema();
+    });
     recognition.onresult = (event) => {
       this.recognition(event);
     }
@@ -159,5 +146,10 @@ const app = new Vue({
     .then(stream => {
       this.stream = stream;
     });
+  },
+  watch: {
+    verso(verso) {
+      this.animacion.push(verso);
+    },
   },
 });
