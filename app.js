@@ -128,7 +128,7 @@ const app = new Vue({
     },
   },
   mounted() {    
-    axios.get('poemas.php').then((res) => {
+    axios.get('poemas.php' + location.search).then((res) => {
       Object.keys(res.data).forEach(key => {
         this[key] = res.data[key];
       });
