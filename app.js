@@ -13,7 +13,7 @@ const app = new Vue({
   data() {
     return {
       tiempoPermanencia: 6,
-      tiempoContinuo: 1,
+      tiempoContinuo: 3,
       tiempoRetraso: -1, //preview
       poeta: '',
       poema: '',
@@ -25,14 +25,20 @@ const app = new Vue({
       events: [],
       times: [],
       words: [],
+      recognized: [],
       lines: [],
       animacion: [],
       audioUrl: null,
       mediaRecorder: null,
+      current: {text: [], listen: []},
     };
   },
   methods: {
-
+    estilo(w, i) {
+      if (!this.recognized[i]) return 'span';
+      if (this.recognized[i].toLowerCase() == w.word.toLowerCase()) return 'b';
+      return 'u';
+    },
     play() {
       const audio = new Audio(this.audioUrl);
       audio.play();
@@ -40,14 +46,17 @@ const app = new Vue({
     paint() {
       const t = (new Date().getTime() - this.t0) / 1000 - this.tiempoRetraso;
       const text = [];
+      const listen = [];
       let t_p = null, line = '';
       this.times.forEach((t_i, i) => {
         if (t_i < t && t_i >= t - this.tiempoPermanencia) {
           if (t_p && t_i - t_p > this.tiempoContinuo) {
             text.splice(0);
+            listen.splice(0);
           }
           if (this.words[i]) {
             text.push(this.words[i].word);
+            listen.push(this.recognized[i]);
             const isLast = this.words[i].last;
             const word = this.words[i + (isLast ? 1 : 0)];
             line = word && this.lines[word.line] || '';
@@ -55,6 +64,8 @@ const app = new Vue({
           t_p = t_i;
         }
       });
+      this.current.text = text;
+      this.current.listen = listen;
       this.verso = this.times.length ? line : this.lines[this.words[0].line];
     },
     startVoice() {
@@ -63,6 +74,7 @@ const app = new Vue({
         recognition.start()
         this.t0 = new Date().getTime();
         this.times.splice(0);
+        this.recognized.splice(0);
         // record audio
         this.mediaRecorder = new MediaRecorder(this.stream);
         const audioChunks = [];
@@ -83,12 +95,13 @@ const app = new Vue({
       this.events.push(event);
       const words = this.getEventWords(event);
       const t = (new Date().getTime() - this.t0) / 1000;
-      const res = [];
       words.forEach((word, index) => {
         if (this.times[index] === undefined) {
           this.times.push(t);
+          this.recognized.push(word);
+        } else {
+          this.recognized[index] = word;
         }
-        res.push(`${this.times[index]}: ${word}`);
       });
       this.paint();
     },

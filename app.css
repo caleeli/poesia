@@ -83,3 +83,13 @@ html, body, #app {
   opacity: 0;
   transform: translateY(30px);
 }
+
+.palabras-poema {
+  overflow-y: auto;
+}
+.palabras-poema u {
+  color: red;
+}
+.palabras-poema u:last-of-type {
+  color: black;
+}
