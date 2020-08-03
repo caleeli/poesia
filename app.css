@@ -73,7 +73,7 @@ html, body, #app {
 
 
 .list-item {
-  display: inline-block;
+  display: block;
   margin-right: 10px;
 }
 .list-enter-active, .list-leave-active {

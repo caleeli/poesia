@@ -14,7 +14,8 @@ const app = new Vue({
     return {
       tiempoPermanencia: 6,
       tiempoContinuo: 3,
-      tiempoRetraso: -1, //preview
+      tiempoRetraso: 0, //preview
+      tiempoRetrasoAudio: 1, //preview
       poeta: '',
       poema: '',
       fondo: '',
@@ -34,14 +35,42 @@ const app = new Vue({
     };
   },
   methods: {
+    endLine() {
+      let i = this.times.length - 1;
+      const line = this.words[i].line;
+      const t = (new Date().getTime() - this.t0) / 1000;
+      console.log(this.lines[line]);
+      while(i < this.words.length) {
+        this.times[i] = t;
+        this.recognized[i] = this.words[i].word;
+        if (this.words[i].last) {
+          break;
+        }
+        i++;
+      }
+    },
+    save() {
+      const bodyFormData = new FormData();
+      bodyFormData.set('recognized', JSON.stringify(this.recognized));
+      bodyFormData.set('times', JSON.stringify(this.times));
+      bodyFormData.set('audioUrl', JSON.stringify(this.audioUrl));
+      axios.post('save.php' + location.search, bodyFormData).then((res) => {
+        console.log(res);
+      });
+    },
     estilo(w, i) {
       if (!this.recognized[i]) return 'span';
       if (this.recognized[i].toLowerCase() == w.word.toLowerCase()) return 'b';
       return 'u';
     },
     play() {
-      const audio = new Audio(this.audioUrl);
-      audio.play();
+      this.t0 = new Date().getTime();
+      this.animacion.splice(0);
+      this.paint();
+      setTimeout(() => {
+        const audio = new Audio(this.audioUrl);
+        audio.play();
+      }, this.tiempoRetrasoAudio * 1000);
     },
     paint() {
       const t = (new Date().getTime() - this.t0) / 1000 - this.tiempoRetraso;
@@ -66,7 +95,7 @@ const app = new Vue({
       });
       this.current.text = text;
       this.current.listen = listen;
-      this.verso = this.times.length ? line : this.lines[this.words[0].line];
+      this.verso = (!line && t < 5 - this.tiempoRetraso) || !this.times.length ? this.lines[this.words[0].line] :  line;
     },
     startVoice() {
       this.started = !this.started;
@@ -83,7 +112,11 @@ const app = new Vue({
         });
         this.mediaRecorder.addEventListener("stop", () => {
           const audioBlob = new Blob(audioChunks);
-          this.audioUrl = URL.createObjectURL(audioBlob);
+          const reader = new FileReader();
+          reader.readAsDataURL(audioBlob);
+          reader.onload = () => {
+            this.audioUrl = reader.result.replace('application/octet-stream', 'audio/wav');
+          };
         });
         this.mediaRecorder.start();
       } else {
@@ -140,7 +173,7 @@ const app = new Vue({
       })
     },
   },
-  mounted() {    
+  mounted() {
     axios.get('poemas.php' + location.search).then((res) => {
       Object.keys(res.data).forEach(key => {
         this[key] = res.data[key];
@@ -162,7 +195,8 @@ const app = new Vue({
   },
   watch: {
     verso(verso) {
-      this.animacion.push(verso);
+      const last = this.animacion.length && this.animacion[this.animacion.length-1];
+      if (last != verso) this.animacion.push(verso);
     },
   },
 });

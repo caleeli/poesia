@@ -45,6 +45,8 @@
                     {{ started ? 'PARAR' : 'GRABAR' }}
                 </button>
                 <button class="btn btn-success" @click="play" :disabled="!audioUrl">PLAY</button>
+                <button class="btn btn-primary" @click="save" :disabled="!audioUrl">SAVE</button>
+                <button class="btn btn-primary" @click="endLine" :disabled="!started">ENDLINE</button>
             </div>
             <div class="palabras-poema">
                 <component
