@@ -4,8 +4,8 @@ html, body, #app {
   height: 100%;
 }
 .viewport {
-  width: 793px;
-  height: 377px;
+  width: 1200px;
+  height: 570px;
   overflow: hidden;
   position: relative;
   background-color: black;
