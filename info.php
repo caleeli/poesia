@@ -5,8 +5,9 @@ $poemas = [
         'titulo' => 'primavera',
         'poeta' => 'ARMANDO CHIRVECHES',
         'poema' => file_get_contents('textos/primavera.txt'),
-        'fondo' => '',
+        'fondo' => 'fondos/laguna.jpg',
         'frente' => 'poetas/armando_chirveches.png',
+        'audioUrl' => 'audios/Primavera.m4a',
     ],
     [
         'titulo' => 'la muerte por el tacto',

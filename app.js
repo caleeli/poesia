@@ -12,6 +12,7 @@ const app = new Vue({
   el: "#app",
   data() {
     return {
+      manual: false,
       tiempoPermanencia: 6,
       tiempoContinuo: 3,
       tiempoRetraso: 0, //preview
@@ -36,7 +37,7 @@ const app = new Vue({
   },
   methods: {
     endLine() {
-      let i = this.times.length - 1;
+      let i = Math.max(0, this.times.length - 1);
       const line = this.words[i].line;
       const t = (new Date().getTime() - this.t0) / 1000;
       console.log(this.lines[line]);
@@ -44,7 +45,10 @@ const app = new Vue({
         this.times[i] = t;
         this.recognized[i] = this.words[i].word;
         if (this.words[i].last) {
-          break;
+          i++;
+          this.times[i] = t;
+          this.recognized[i] = this.words[i].word;
+            break;
         }
         i++;
       }
@@ -181,7 +185,9 @@ const app = new Vue({
       this.preparePoema();
     });
     recognition.onresult = (event) => {
-      this.recognition(event);
+      if (!this.manual) {
+        this.recognition(event);
+      }
     }
     setInterval(() => {
       this.paint();
