@@ -22,6 +22,8 @@ $poemas = [
         'poema' => file_get_contents('textos/la_muerte_por_el_tacto_2.txt'),
         'fondo' => 'fondos/la_muerte_por_el_tacto.jpg',
         'frente' => 'poetas/la_muerte_por_el_tacto.png',
+        'audioUrl' => 'audios/LaMuertePorElTacto2.mp3',
+        'tiempoRetrasoAudio' => 1,
     ],
     [
         'titulo' => 'Habla Olimpo',

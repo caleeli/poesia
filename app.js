@@ -13,7 +13,7 @@ const app = new Vue({
   data() {
     return {
       manual: false,
-      tiempoPermanencia: 6,
+      tiempoPermanencia: 9,
       tiempoContinuo: 3,
       tiempoRetraso: 0, //preview
       tiempoRetrasoAudio: 1, //preview
