@@ -41,7 +41,7 @@ $poemas = [
         'fondo' => 'fondos/pajabrava.jpg',
         'frente' => 'poetas/Yolanda_Bedregal.png',
         'audioUrl' => 'audios/Rebelion.mp3',
-        'tiempoRetrasoAudio' => 0.5,
+        'tiempoRetrasoAudio' => 1,
     ],
 ];
 
