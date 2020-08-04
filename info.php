@@ -34,6 +34,15 @@ $poemas = [
         'audioUrl' => 'audios/Habla_Olimpo.mp3',
         'tiempoRetrasoAudio' => 0.5,
     ],
+    [
+        'titulo' => 'Rebelión',
+        'poeta' => 'Yolanda Bedregal',
+        'poema' => file_get_contents('textos/rebelion.txt'),
+        'fondo' => 'fondos/pajabrava.jpg',
+        'frente' => 'poetas/Yolanda_Bedregal.png',
+        'audioUrl' => 'audios/Rebelion.mp3',
+        'tiempoRetrasoAudio' => 0.5,
+    ],
 ];
 
 foreach (glob("saves/*.json") as $file) {
