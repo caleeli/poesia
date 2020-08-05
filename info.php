@@ -43,6 +43,15 @@ $poemas = [
         'audioUrl' => 'audios/Rebelion.mp3',
         'tiempoRetrasoAudio' => 1,
     ],
+    [
+        'titulo' => 'Luminar',
+        'poeta' => 'Blanca Wiethüchter',
+        'poema' => file_get_contents('textos/luminar.txt'),
+        'fondo' => 'fondos/salar.jpg',
+        'frente' => 'poetas/Blanca_Wiethuchter.png',
+        'audioUrl' => 'audios/Luminar.ogg',
+        'tiempoRetrasoAudio' => 1.5,
+    ],
 ];
 
 foreach (glob("saves/*.json") as $file) {
