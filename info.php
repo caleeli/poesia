@@ -50,7 +50,7 @@ $poemas = [
         'fondo' => 'fondos/salar.jpg',
         'frente' => 'poetas/Blanca_Wiethuchter.png',
         'audioUrl' => 'audios/Luminar.ogg',
-        'tiempoRetrasoAudio' => 1.5,
+        'tiempoRetrasoAudio' => 1,
     ],
 ];
 
